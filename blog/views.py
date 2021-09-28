@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from .models import Post
 
-# This function will haandle the traffic from the home page of the Blog.
-
+# This function will handle the traffic from the home page of the Blog.
 
 
 def home(request):
