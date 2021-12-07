@@ -26,6 +26,7 @@ class PostListView(ListView):
     ordering = ['-date_posted']
     paginate_by = 2
 
+
 class PostDetailView(DetailView):
     model = Post
 
