@@ -4,6 +4,15 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
+# My Code:
+from django.conf import settings
+from django.core.mail import send_mail
+# To use the email settings in settings.py
+from django.conf import settings
+# To use the tokens.py
+from .tokens import account_activation_token
+#from accounts.utilities import account_activation_token
+
 # Create your views here.
 def register(request):
     if request.method == 'POST':
@@ -11,7 +20,14 @@ def register(request):
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Your account has been created. You are now able to log in')
+            messages.success(request, f'Your account has been created! You are now able to log in')
+            send_mail(
+                'Confirmation Email',
+                'You are now registered',
+                'Turbosonic1993@gmail.com',
+                [settings.EMAIL_HOST_USER],
+                fail_silently=False,
+            )
             return redirect('login')
     else:
         form = UserRegisterForm()
@@ -22,6 +38,12 @@ def profile(request):
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        # My Code:
+        subject = 'welcome to GFG world'
+        message = f'Hi {user.username}, thank you for registering in geeksforgeeks.'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [user.email, ]
+        send_mail(subject, message, email_from, recipient_list)
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
